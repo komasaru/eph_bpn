@@ -1,3 +1,4 @@
+require 'date'
 require "eph_bpn/version"
 require "eph_bpn/argument"
 require "eph_bpn/compute"
