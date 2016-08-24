@@ -108,9 +108,9 @@ module EphBpn
     # @return: r  (回転行列)
     #=========================================================================
     def r_generic
-      r = r_x( -5.1 * Const::AS2R)
-      r = r_y(-17.3 * Const::AS2R, r)
-      r = r_z( 78.0 * Const::AS2R, r)
+      r = r_x( -5.1 * 180 * Const::MAS2R)
+      r = r_y(-17.3 * 180 * Const::MAS2R, r)
+      r = r_z( 78.0 * 180 * Const::MAS2R, r)
       return r
     rescue => e
       raise
