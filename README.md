@@ -24,6 +24,8 @@ Or install it yourself as:
 
 ### Instantiation
 
+    require 'eph_bpn'
+    
     e = EphBpn.new("20160723")
     e = EphBpn.new("20160723123456")
     e = EphBpn.new
