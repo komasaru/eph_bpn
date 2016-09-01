@@ -107,49 +107,49 @@ module EphBpn
     # @param:  <none>
     # @return: r  (回転行列)
     #=========================================================================
-    def r_generic
-      r = r_x( -5.1 * 180 * Const::MAS2R)
-      r = r_y(-17.3 * 180 * Const::MAS2R, r)
-      r = r_z( 78.0 * 180 * Const::MAS2R, r)
+    def r_bias
+      r = r_x( -5.1 * Const::MAS2R)
+      r = r_y(-17.3 * Const::MAS2R, r)
+      r = r_z( 78.0 * Const::MAS2R, r)
       return r
     rescue => e
       raise
     end
 
     #=========================================================================
-    # Bias 変換行列（IAU 2006 (Fukushima-Williams 4-angle formulation) 理論）
+    # Bias + Precession 変換行列
+    #
+    # * IAU 2006 (Fukushima-Williams 4-angle formulation) 理論
     #
     # @param:  <none>
     # @return: r  (変換行列)
     #=========================================================================
     def r_fw_iau_06
-      jc = jd2jc(2451545.0)
-      eps = compute_obliquity(jc)
       gamma = (-0.052928    + \
               (10.556378    + \
               ( 0.4932044   + \
               (-0.00031238  + \
               (-0.000002788 + \
               ( 0.0000000260) \
-              * jc) * jc) * jc) * jc) * jc) * Const::AS2R
+              * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
       phi   = (84381.412819    + \
               (  -46.811016    + \
               (    0.0511268   + \
               (    0.00053289  + \
               (   -0.000000440 + \
               (   -0.0000000176) \
-              * jc) * jc) * jc) * jc) * jc) * Const::AS2R
+              * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
       psi   = (  -0.041775    + \
               (5038.481484    + \
               (   1.5584175   + \
               (  -0.00018522  + \
               (  -0.000026452 + \
               (  -0.0000000148) \
-              * jc) * jc) * jc) * jc) * jc) * Const::AS2R
+              * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
       r = r_z(gamma)
       r = r_x(phi,   r)
       r = r_z(-psi,  r)
-      r = r_x(-eps,  r)
+      r = r_x(-@eps, r)
       return r
     rescue => e
       raise

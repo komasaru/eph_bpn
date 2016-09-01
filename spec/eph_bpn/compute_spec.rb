@@ -18,42 +18,46 @@ describe EphBpn::Compute do
     it { expect(subject).to be_within(1.0e-17).of(0.40905500411767176) }
   end
 
-  context ".r_generic" do
-    subject { c.r_generic }
+  context ".r_bias" do
+    subject { c.r_bias}
     it { expect(subject).to match([
       [
-        be_within(1.0e-16).of(0.9999999975694234    ),
-        be_within(1.0e-20).of(6.806790796552961e-05 ),
-        be_within(1.0e-21).of(1.5096795052030026e-05)
+        be_within(1.0e-15).of(0.999999999999925    ),
+        be_within(1.0e-22).of(3.781546733392249e-07),
+        be_within(1.0e-23).of(8.387275748188115e-08)
       ], [
-        be_within(1.0e-20).of(-6.806784076745943e-05),
-        be_within(1.0e-16).of( 0.9999999976734761   ),
-        be_within(1.0e-21).of(-4.451617209125351e-06)
+        be_within(1.0e-23).of(-3.7815467126542776e-07),
+        be_within(1.0e-16).of( 0.9999999999999282    ),
+        be_within(1.0e-24).of(-2.4725529453463136e-08)
       ], [
-        be_within(1.0e-21).of(-1.5097098029177459e-05),
-        be_within(1.0e-21).of( 4.450589592063653e-06 ),
-        be_within(1.0e-15).of( 0.999999999876135     )
+        be_within(1.0e-23).of(-8.387276683194964e-08 ),
+        be_within(1.0e-24).of( 2.4725497736586244e-08),
+        be_within(1.0e-16).of( 0.9999999999999961    )
       ]
     ]) }
   end
 
   context ".r_fw_iau_06" do
-    subject { c.r_fw_iau_06 }
+    subject do
+      c.instance_variable_set(:@jc,  0.16557152635181382)
+      c.instance_variable_set(:@eps, 0.40905500411767176)
+      c.r_fw_iau_06
+    end
     it { expect(subject).to match([
       [
-        be_within(1.0e-16).of( 0.9999999999999941   ),
-        be_within(1.0e-23).of(-7.078368960971556e-08),
-        be_within(1.0e-23).of( 8.056213977613186e-08)
+        be_within(1.0e-16).of( 0.9999918518786002   ),
+        be_within(1.0e-19).of(-0.0037024886248251923),
+        be_within(1.0e-19).of(-0.0016086498658162921)
       ],
       [
-        be_within(1.0e-23).of(7.078368694637676e-08 ),
-        be_within(1.0e-16).of(0.9999999999999969    ),
-        be_within(1.0e-24).of(3.3059437354321375e-08)
+        be_within(1.0e-18).of( 0.003702488711461927 ),
+        be_within(1.0e-16).of( 0.9999931457609051   ),
+        be_within(1.0e-21).of(-2.924159313910657e-06)
       ],
       [
-        be_within(1.0e-23).of(-8.056214211620057e-08),
-        be_within(1.0e-23).of(-3.305943169218395e-08),
-        be_within(1.0e-16).of( 0.9999999999999962   )
+        be_within(1.0e-19).of( 0.0016086496664120891 ),
+        be_within(1.0e-22).of(-3.0318724813516162e-06),
+        be_within(1.0e-15).of( 0.999998706117692     )
       ]
     ]) }
   end

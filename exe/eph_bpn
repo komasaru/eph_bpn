@@ -3,16 +3,18 @@
 require "eph_bpn"
 
 e = EphBpn.new(ARGV[0])
-r_i = [-0.50787065, 0.80728228, 0.34996714]  # ICRS Coordinate
-r_b = e.apply_bias(r_i)  # Apply Bias
-r_p = e.apply_prec(r_b)  # Apply Precession
-r_n = e.apply_nut(r_p)   # Apply Nutation
-puts "TDB: #{e.tdb}"     #=> TDB: 2016-07-23 00:00:00 +0000
-puts " JD: #{e.jd}"      #=>  JD: 2457592.5
-puts " JC: #{e.jc}"      #=>  JC: 0.16557152635181382
-puts "EPS: #{e.eps}"     #=> EPS: 0.40905500411767176
-p r_i                    #=> [-0.50787065, 0.80728228, 0.34996714]
-p r_b                    #=> [-0.5078706789483137, 0.8072822556207571, 0.34996715422685276]
-p r_p                    #=> [-0.5114184398597698, 0.8053953379861463, 0.3491472536549302]
-p r_n                    #=> [-0.5114184385245731, 0.8053953403876852, 0.3491472500709293]
+pos_g  = [-0.50787065, 0.80728228, 0.34996714]  # GCRS Coordinate
+pos_b  = e.apply_bias(pos_g)       # Apply Bias
+pos_p  = e.apply_prec(pos_b)       # Apply Precession
+pos_n  = e.apply_nut(pos_p)        # Apply Nutation
+pos_bp = e.apply_bias_prec(pos_g)  # Apply Bias + Precession
+puts "TDB: #{e.tdb}"               #=> TDB: 2016-07-23 00:00:00 +0000
+puts " JD: #{e.jd}"                #=>  JD: 2457592.5
+puts " JC: #{e.jc}"                #=>  JC: 0.16557152635181382
+puts "EPS: #{e.eps}"               #=> EPS: 0.40905500411767176
+p pos_g                            #=> [-0.50787065, 0.80728228, 0.34996714]
+p pos_b                            #=> [-0.507870315369686, 0.8072824634004779, 0.34996720255697145]
+p pos_p                            #=> [-0.5114180771311418, 0.8053955471104202, 0.34914730256926324]
+p pos_n                            #=> [-0.5114180757959449, 0.8053955495119587, 0.34914729898526137]
+p pos_bp                           #=> [-0.5114184398598124, 0.805395337986056, 0.3491472536550768]
 

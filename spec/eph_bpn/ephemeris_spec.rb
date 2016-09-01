@@ -11,25 +11,33 @@ describe EphBpn::Ephemeris do
 
     context ".apply_bias" do
       it { expect(e.apply_bias([-0.50787065, 0.80728228, 0.34996714])).to match([
-        be_within(1.0e-16).of(-0.5078706789483137 ),
-        be_within(1.0e-16).of( 0.8072822556207571 ),
-        be_within(1.0e-17).of( 0.34996715422685276)
+        be_within(1.0e-15).of(-0.507870315369686  ),
+        be_within(1.0e-16).of( 0.8072824634004779 ),
+        be_within(1.0e-17).of( 0.34996720255697145)
       ]) }
     end
 
     context ".apply_prec" do
-      it { expect(e.apply_prec([-0.5078706789483137, 0.8072822556207571, 0.34996715422685276])).to match([
-        be_within(1.0e-16).of(-0.5114184398597698),
-        be_within(1.0e-16).of( 0.8053953379861463),
-        be_within(1.0e-16).of( 0.3491472536549302)
+      it { expect(e.apply_prec([-0.507870315369686, 0.8072824634004779, 0.34996720255697145])).to match([
+        be_within(1.0e-16).of(-0.5114180771311418 ),
+        be_within(1.0e-16).of( 0.8053955471104202 ),
+        be_within(1.0e-17).of( 0.34914730256926324)
       ]) }
     end
 
     context ".apply_nut" do
-      it { expect(e.apply_nut([-0.5114184398597698, 0.8053953379861463, 0.3491472536549302])).to match([
-        be_within(1.0e-16).of(-0.5114184385245731),
-        be_within(1.0e-16).of( 0.8053953403876852),
-        be_within(1.0e-16).of( 0.3491472500709293)
+      it { expect(e.apply_nut([-0.5114180771311418, 0.8053955471104202, 0.34914730256926324])).to match([
+        be_within(1.0e-16).of(-0.5114180757959449 ),
+        be_within(1.0e-16).of( 0.8053955495119587 ),
+        be_within(1.0e-17).of( 0.34914729898526137)
+      ]) }
+    end
+
+    context ".apply_bias_prec" do
+      it { expect(e.apply_bias_prec([-0.50787065, 0.80728228, 0.34996714])).to match([
+        be_within(1.0e-16).of(-0.5114184398598124),
+        be_within(1.0e-15).of( 0.805395337986056 ),
+        be_within(1.0e-16).of( 0.3491472536550768)
       ]) }
     end
   end

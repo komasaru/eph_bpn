@@ -17,8 +17,7 @@ module EphBpn
     # @return: pos_b  (適用後直角座標)
     #=========================================================================
     def apply_bias(pos)
-      #return rotate(r_generic, pos)   # 一般的な理論
-      return rotate(r_fw_iau_06, pos)  # IAU 2006 (Fukushima-Williams) 理論
+      return rotate(r_bias, pos)
     end
 
     #=========================================================================
@@ -29,6 +28,16 @@ module EphBpn
     #=========================================================================
     def apply_prec(pos)
       return rotate(r_prec, pos)
+    end
+
+    #=========================================================================
+    # Bias + Precession（歳差） 適用
+    #
+    # @param:  pos    (適用前直角座標)
+    # @return: pos_p  (適用後直角座標)
+    #=========================================================================
+    def apply_bias_prec(pos)
+      return rotate(r_fw_iau_06, pos)  # IAU 2006 (Fukushima-Williams) 理論
     end
 
     #=========================================================================
