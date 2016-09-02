@@ -12,6 +12,10 @@ puts "TDB: #{e.tdb}"               #=> TDB: 2016-07-23 00:00:00 +0000
 puts " JD: #{e.jd}"                #=>  JD: 2457592.5
 puts " JC: #{e.jc}"                #=>  JC: 0.16557152635181382
 puts "EPS: #{e.eps}"               #=> EPS: 0.40905500411767176
+p e.r_bias                         # Rotation matrix for Bias
+p e.r_prec                         # Rotation matrix for Precession
+p e.r_nut                          # Rotation matrix for Nutation
+p e.r_bias_prec                    # Rotation matrix for Bias & precession
 p pos_g                            #=> [-0.50787065, 0.80728228, 0.34996714]
 p pos_b                            #=> [-0.507870315369686, 0.8072824634004779, 0.34996720255697145]
 p pos_p                            #=> [-0.5114180771311418, 0.8053955471104202, 0.34914730256926324]

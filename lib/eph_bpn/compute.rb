@@ -107,10 +107,64 @@ module EphBpn
     # @param:  <none>
     # @return: r  (回転行列)
     #=========================================================================
-    def r_bias
+    def comp_r_bias
       r = r_x( -5.1 * Const::MAS2R)
       r = r_y(-17.3 * Const::MAS2R, r)
       r = r_z( 78.0 * Const::MAS2R, r)
+      return r
+    rescue => e
+      raise
+    end
+
+    #=========================================================================
+    # precession（歳差）変換行列（J2000.0 用）
+    #
+    # * 歳差の変換行列
+    #     P(ε , ψ , φ , γ ) = R1(-ε ) * R3(-ψ ) * R1(φ ) * R3(γ )
+    #   但し、R1, R2, R3 は x, y, z 軸の回転。
+    #              + 1     0      0   +            +  cosθ   sinθ   0 +
+    #     R1(θ ) = | 0   cosθ   sinθ  | , R3(θ ) = | -sinθ   cosθ   0 |
+    #              + 0  -sinθ   cosθ  +            +    0      0    1 +
+    #                     + P_11 P_12 P_13 +
+    #     P(ε, ψ, φ, γ) = | P_21 P_22 P_23 | とすると、
+    #                     + P_31 P_32 P_33 +
+    #     P_11 = cosψ cosγ + sinψ cosφ sinγ
+    #     P_12 = cosψ sinγ - sinψ cosφ ̄cosγ
+    #     P_13 = -sinψ sinφ
+    #     P_21 = cosε sinψ cosγ - (cosε cosψ cosφ + sinε sinφ )sinγ
+    #     P_22 = cosε sinψ cosγ + (cosε cosψ cosφ + sinε sinφ )cosγ
+    #     P_23 = cosε cosψ sinφ - sinε cosφ
+    #     P_31 = sinε sinψ cosγ - (sinε cosψ cosφ - cosε sinφ)sinγ
+    #     P_32 = sinε sinψ cosγ + (sinε cosψ cosφ - cosε sinφ)cosγ
+    #     P_33 = sinε cosψ sinφ + cosε cosφ
+    #
+    # @param:  <none>
+    # @return: r  (変換行列)
+    #=========================================================================
+    def comp_r_prec
+      gamma = ((10.556403    + \
+               (0.4932044    + \
+               (-0.00031238  + \
+               (-0.000002788 + \
+               (0.0000000260)  \
+               * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
+      phi   =  (84381.406000    + \
+               (  -46.811015    + \
+               (    0.0511269   + \
+               (    0.00053289  + \
+               (   -0.000000440 + \
+               (   -0.0000000176) \
+               * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
+      psi   = (( 5038.481507    + \
+               (    1.5584176   + \
+               (   -0.00018522  + \
+               (   -0.000026452 + \
+               (   -0.0000000148) \
+               * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
+      r = r_z(gamma)
+      r = r_x(phi,   r)
+      r = r_z(-psi,  r)
+      r = r_x(-@eps, r)
       return r
     rescue => e
       raise
@@ -124,7 +178,7 @@ module EphBpn
     # @param:  <none>
     # @return: r  (変換行列)
     #=========================================================================
-    def r_fw_iau_06
+    def comp_r_bias_prec
       gamma = (-0.052928    + \
               (10.556378    + \
               ( 0.4932044   + \
@@ -156,66 +210,12 @@ module EphBpn
     end
 
     #=========================================================================
-    # precession（歳差）変換行列（J2000.0 用）
-    #
-    # * 歳差の変換行列
-    #     P(ε , ψ , φ , γ ) = R1(-ε ) * R3(-ψ ) * R1(φ ) * R3(γ )
-    #   但し、R1, R2, R3 は x, y, z 軸の回転。
-    #              + 1     0      0   +            +  cosθ   sinθ   0 +
-    #     R1(θ ) = | 0   cosθ   sinθ  | , R3(θ ) = | -sinθ   cosθ   0 |
-    #              + 0  -sinθ   cosθ  +            +    0      0    1 +
-    #                     + P_11 P_12 P_13 +
-    #     P(ε, ψ, φ, γ) = | P_21 P_22 P_23 | とすると、
-    #                     + P_31 P_32 P_33 +
-    #     P_11 = cosψ cosγ + sinψ cosφ sinγ
-    #     P_12 = cosψ sinγ - sinψ cosφ ̄cosγ
-    #     P_13 = -sinψ sinφ
-    #     P_21 = cosε sinψ cosγ - (cosε cosψ cosφ + sinε sinφ )sinγ
-    #     P_22 = cosε sinψ cosγ + (cosε cosψ cosφ + sinε sinφ )cosγ
-    #     P_23 = cosε cosψ sinφ - sinε cosφ
-    #     P_31 = sinε sinψ cosγ - (sinε cosψ cosφ - cosε sinφ)sinγ
-    #     P_32 = sinε sinψ cosγ + (sinε cosψ cosφ - cosε sinφ)cosγ
-    #     P_33 = sinε cosψ sinφ + cosε cosφ
-    #
-    # @param:  <none>
-    # @return: r  (変換行列)
-    #=========================================================================
-    def r_prec
-      gamma = ((10.556403    + \
-               (0.4932044    + \
-               (-0.00031238  + \
-               (-0.000002788 + \
-               (0.0000000260)  \
-               * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
-      phi   =  (84381.406000    + \
-               (  -46.811015    + \
-               (    0.0511269   + \
-               (    0.00053289  + \
-               (   -0.000000440 + \
-               (   -0.0000000176) \
-               * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
-      psi   = (( 5038.481507    + \
-               (    1.5584176   + \
-               (   -0.00018522  + \
-               (   -0.000026452 + \
-               (   -0.0000000148) \
-               * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
-      r = r_z(gamma)
-      r = r_x(phi,   r)
-      r = r_z(-psi,  r)
-      r = r_x(-@eps, r)
-      return r
-    rescue => e
-      raise
-    end
-
-    #=========================================================================
     # nutation（章動）変換行列
     #
     # @param:  <none>
     # @return: r  (変換行列)
     #=========================================================================
-    def r_nut
+    def comp_r_nut
       dpsi_ls, deps_ls = compute_lunisolar
       dpsi_pl, deps_pl = compute_planetary
       dpsi, deps = dpsi_ls + dpsi_pl, deps_ls + deps_pl

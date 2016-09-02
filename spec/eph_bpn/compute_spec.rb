@@ -18,8 +18,8 @@ describe EphBpn::Compute do
     it { expect(subject).to be_within(1.0e-17).of(0.40905500411767176) }
   end
 
-  context ".r_bias" do
-    subject { c.r_bias}
+  context ".comp_r_bias" do
+    subject { c.comp_r_bias}
     it { expect(subject).to match([
       [
         be_within(1.0e-15).of(0.999999999999925    ),
@@ -37,11 +37,11 @@ describe EphBpn::Compute do
     ]) }
   end
 
-  context ".r_fw_iau_06" do
+  context ".comp_r_bias_prec" do
     subject do
       c.instance_variable_set(:@jc,  0.16557152635181382)
       c.instance_variable_set(:@eps, 0.40905500411767176)
-      c.r_fw_iau_06
+      c.comp_r_bias_prec
     end
     it { expect(subject).to match([
       [
@@ -62,11 +62,11 @@ describe EphBpn::Compute do
     ]) }
   end
 
-  context ".r_prec" do
+  context ".comp_r_prec" do
     subject do
       c.instance_variable_set(:@jc,  0.16557152635181382)
       c.instance_variable_set(:@eps, 0.40905500411767176)
-      c.r_prec
+      c.comp_r_prec
     end
     it { expect(subject).to match([
       [
@@ -88,10 +88,10 @@ describe EphBpn::Compute do
   context "#Nutation computation" do
     let(:jc) { 0.16557152635181382 }
 
-    context ".r_nut" do
+    context ".comp_r_nut" do
       subject do
         c.instance_variable_set(:@jc, jc)
-        c.r_nut
+        c.comp_r_nut
       end
       it { expect(subject).to match([
         [
