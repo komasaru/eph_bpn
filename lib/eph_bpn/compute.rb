@@ -200,6 +200,7 @@ module EphBpn
               (  -0.000026452 + \
               (  -0.0000000148) \
               * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
+      p gamma, phi, psi
       r = r_z(gamma)
       r = r_x(phi,   r)
       r = r_z(-psi,  r)
@@ -224,8 +225,10 @@ module EphBpn
       dpsi, deps = dpsi_ls + dpsi_pl, deps_ls + deps_pl
       dpsi += dpsi * (0.4697e-6 + fj2)
       deps += deps * fj2
-      r = r_z(-dpsi)
-      r = r_x(-deps, r)
+      p dpsi, deps
+      r = r_x(@eps)
+      r = r_z(-dpsi, r)
+      r = r_x(-@eps-deps, r)
       return r
     rescue => e
       raise
@@ -246,7 +249,9 @@ module EphBpn
         f  = compute_f_iers2003(@jc)
         d  = compute_d_mhb2000(@jc)
         om = compute_om_iers2003(@jc)
-        Const::NUT_LS.reverse.each do |x|
+        Const::NUT_LS.map do |x|
+          x[0, 5] + x[5..-1].map { |y| y.to_s.sub(/\./, "").to_i }
+        end.reverse.each do |x|
           arg = (x[0] * l + x[1] * lp + x[2] * f +
                  x[3] * d + x[4] * om) % Const::PI2
           sarg, carg = Math.sin(arg), Math.cos(arg)
@@ -282,7 +287,9 @@ module EphBpn
         lsa = compute_lsa_iers2003(@jc)
         lur = compute_lur_iers2003(@jc)
         lne = compute_lne_mhb2000(@jc)
-        Const::NUT_PL.reverse.each do |x|
+        Const::NUT_PL.map do |x|
+          x[0, 14] + x[14..-1].map { |y| y.to_s.sub(/\./, "").to_i }
+        end.reverse.each do |x|
           arg = (x[ 0] * l   + x[ 2] * f   + x[ 3] * d   + x[ 4] * om  +
                  x[ 5] * lme + x[ 6] * lve + x[ 7] * lea + x[ 8] * lma +
                  x[ 9] * lju + x[10] * lsa + x[11] * lur + x[12] * lne +

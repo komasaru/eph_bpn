@@ -95,17 +95,17 @@ describe EphBpn::Compute do
       end
       it { expect(subject).to match([
         [
-          1.0,
-          be_within(1.0e-25).of(1.6578152046908853e-09),
-          0.0
+          be_within(1.0e-05).of(1.0),
+          be_within(1.0e-21).of(1.5230627822141132e-05),
+          be_within(1.0e-21).of(6.602601380018686e-06)
         ], [
-          be_within(1.0e-25).of(-1.6578152046908853e-09),
-          1.0,
-          be_within(1.0e-25).of( 4.4499876195270214e-09)
+          be_within(1.0e-21).of(-1.5230921650908751e-05),
+          be_within(1.0e-05).of(1.0),
+          be_within(1.0e-21).of(4.4504203998374514e-05)
         ], [
-          be_within(1.0e-33).of( 7.377257136338095e-18 ),
-          be_within(1.0e-25).of(-4.4499876195270214e-09),
-          1.0
+          be_within(1.0e-22).of(-6.6019235457465905e-06),
+          be_within(1.0e-20).of(-4.450430455593679e-05),
+          be_within(1.0e-05).of(1.0)
         ]
       ]) }
     end
@@ -116,8 +116,8 @@ describe EphBpn::Compute do
         c.compute_lunisolar
       end
       it { expect(subject).to match([
-        be_within(1.0e-25).of(-1.6576311981052723e-09),
-        be_within(1.0e-24).of(-4.450096572299436e-09 )
+        be_within(1.0e-21).of(-1.6598098362618997e-05),
+        be_within(1.0e-20).of(-4.450550418054413e-05 )
       ]) }
     end
 
@@ -127,8 +127,8 @@ describe EphBpn::Compute do
         c.compute_planetary
       end
       it { expect(subject).to match([
-        be_within(1.0e-29).of(-1.8399026998841977e-13),
-        be_within(1.0e-29).of( 1.0690640747722597e-13)
+        be_within(1.0e-24).of(-2.093306192089416e-09),
+        be_within(1.0e-25).of( 1.2294199731308438e-09)
       ]) }
     end
 
