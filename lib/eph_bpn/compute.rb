@@ -224,8 +224,8 @@ module EphBpn
       dpsi, deps = dpsi_ls + dpsi_pl, deps_ls + deps_pl
       dpsi += dpsi * (0.4697e-6 + fj2)
       deps += deps * fj2
-      r = r_z(dpsi)
-      r = r_x(deps, r)
+      r = r_z(-dpsi)
+      r = r_x(-deps, r)
       return r
     rescue => e
       raise
