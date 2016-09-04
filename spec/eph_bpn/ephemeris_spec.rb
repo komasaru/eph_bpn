@@ -27,9 +27,9 @@ describe EphBpn::Ephemeris do
 
     context ".apply_nut" do
       it { expect(e.apply_nut([-0.5114180771311418, 0.8053955471104202, 0.34914730256926324])).to match([
-        be_within(1.0e-16).of(-0.5114180757959449 ),
-        be_within(1.0e-16).of( 0.8053955495119587 ),
-        be_within(1.0e-17).of( 0.34914729898526137)
+        be_within(1.0e-16).of(-0.5114180784663388 ),
+        be_within(1.0e-16).of( 0.8053955447088823 ),
+        be_within(1.0e-17).of( 0.34914730615326345)
       ]) }
     end
 

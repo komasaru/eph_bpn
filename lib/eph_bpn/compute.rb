@@ -212,15 +212,20 @@ module EphBpn
     #=========================================================================
     # nutation（章動）変換行列
     #
+    # * IAU 2000A nutation with adjustments to match the IAU 2006 precession.
+    #
     # @param:  <none>
     # @return: r  (変換行列)
     #=========================================================================
     def comp_r_nut
+      fj2 = -2.7774e-6 * @jc
       dpsi_ls, deps_ls = compute_lunisolar
       dpsi_pl, deps_pl = compute_planetary
       dpsi, deps = dpsi_ls + dpsi_pl, deps_ls + deps_pl
-      r = r_z(-dpsi)
-      r = r_x(-deps, r)
+      dpsi += dpsi * (0.4697e-6 + fj2)
+      deps += deps * fj2
+      r = r_z(dpsi)
+      r = r_x(deps, r)
       return r
     rescue => e
       raise
