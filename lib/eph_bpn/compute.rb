@@ -200,7 +200,6 @@ module EphBpn
               (  -0.000026452 + \
               (  -0.0000000148) \
               * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
-      p gamma, phi, psi
       r = r_z(gamma)
       r = r_x(phi,   r)
       r = r_z(-psi,  r)
