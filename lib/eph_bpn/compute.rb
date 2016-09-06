@@ -224,7 +224,6 @@ module EphBpn
       dpsi, deps = dpsi_ls + dpsi_pl, deps_ls + deps_pl
       dpsi += dpsi * (0.4697e-6 + fj2)
       deps += deps * fj2
-      p dpsi, deps
       r = r_x(@eps)
       r = r_z(-dpsi, r)
       r = r_x(-@eps-deps, r)
