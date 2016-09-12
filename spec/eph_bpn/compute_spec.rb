@@ -62,6 +62,29 @@ describe EphBpn::Compute do
     ]) }
   end
 
+  context ".comp_r_bias_prec_nut" do
+    subject do
+      c.instance_variable_set(:@jc,  0.16557152635181382)
+      c.instance_variable_set(:@eps, 0.40905500411767176)
+      c.comp_r_bias_prec_nut
+    end
+    it { expect(subject).to match([
+      [
+        be_within(1.0e-16).of( 0.9999919187533183   ),
+        be_within(1.0e-18).of(-0.003687258120905521 ),
+        be_within(1.0e-19).of(-0.0016020473172943998)
+      ], [
+        be_within(1.0e-18).of( 0.003687329501491259 ),
+        be_within(1.0e-16).of( 0.9999932009119931   ),
+        be_within(1.0e-20).of( 4.160448832457586e-05)
+      ], [
+        be_within(1.0e-19).of( 0.0016018830183462576 ),
+        be_within(1.0e-21).of(-4.7511428444280135e-05),
+        be_within(1.0e-16).of( 0.9999987158559053    )
+      ]
+    ]) }
+  end
+
   context ".comp_r_prec" do
     subject do
       c.instance_variable_set(:@jc,  0.16557152635181382)
@@ -83,6 +106,77 @@ describe EphBpn::Compute do
         be_within(1.0e-16).of( 0.9999987059881922    )
       ]
     ]) }
+  end
+
+  context ".comp_r_prec_nut" do
+    subject do
+      c.instance_variable_set(:@jc,  0.16557152635181382)
+      c.instance_variable_set(:@eps, 0.40905500411767176)
+      c.comp_r_prec_nut
+    end
+    it { expect(subject).to match([
+      [
+        be_within(1.0e-16).of( 0.9999919188852461   ),
+        be_within(1.0e-18).of(-0.003687187390663237 ),
+        be_within(1.0e-19).of(-0.0016021277569724754)
+      ], [
+        be_within(1.0e-19).of( 0.0036872587215447186 ),
+        be_within(1.0e-16).of( 0.9999932011743686    ),
+        be_within(1.0e-21).of( 4.1571132186168924e-05)
+      ], [
+        be_within(1.0e-19).of( 0.0016019635838308039),
+        be_within(1.0e-20).of(-4.747825578998999e-05),
+        be_within(1.0e-16).of( 0.9999987157284209   )
+      ]
+    ]) }
+  end
+
+  context ".comp_gamma_p" do
+    subject do
+      c.instance_variable_set(:@jc, 0.16557152635181382)
+      c.comp_gamma_p
+    end
+    it { expect(subject).to be_within(1.0e-21).of(8.539309447074353e-06) }
+  end
+
+  context ".comp_phi_p" do
+    subject do
+      c.instance_variable_set(:@jc, 0.16557152635181382)
+      c.comp_phi_p
+    end
+    it { expect(subject).to be_within(1.0e-15).of(0.409055031577845) }
+  end
+
+  context ".comp_psi_p" do
+    subject do
+      c.instance_variable_set(:@jc, 0.16557152635181382)
+      c.comp_psi_p
+    end
+    it { expect(subject).to be_within(1.0e-18).of(0.004044663800284435) }
+  end
+
+  context ".comp_gamma_bp" do
+    subject do
+      c.instance_variable_set(:@jc, 0.16557152635181382)
+      c.comp_gamma_bp
+    end
+    it { expect(subject).to be_within(1.0e-21).of(8.282687194101404e-06) }
+  end
+
+  context ".comp_phi_bp" do
+    subject do
+      c.instance_variable_set(:@jc, 0.16557152635181382)
+      c.comp_phi_bp
+    end
+    it { expect(subject).to be_within(1.0e-17).of(0.40905506463647395) }
+  end
+
+  context ".comp_psi_bp" do
+    subject do
+      c.instance_variable_set(:@jc, 0.16557152635181382)
+      c.comp_psi_bp
+    end
+    it { expect(subject).to be_within(1.0e-18).of(0.004044461250893452) }
   end
 
   context "#Nutation computation" do

@@ -117,6 +117,54 @@ module EphBpn
     end
 
     #=========================================================================
+    # Bias + Precession 変換行列
+    #
+    # * IAU 2006 (Fukushima-Williams 4-angle formulation) 理論
+    #
+    # @param:  <none>
+    # @return: r  (変換行列)
+    #=========================================================================
+    def comp_r_bias_prec
+      gamma = comp_gamma_bp
+      phi   = comp_phi_bp
+      psi   = comp_psi_bp
+      r = r_z(gamma)
+      r = r_x(phi,   r)
+      r = r_z(-psi,  r)
+      r = r_x(-@eps, r)
+      return r
+    rescue => e
+      raise
+    end
+
+    #=========================================================================
+    # Bias + Precession + Nutation 変換行列
+    #
+    # * IAU 2006 (Fukushima-Williams 4-angle formulation) 理論
+    #
+    # @param:  <none>
+    # @return: r  (変換行列)
+    #=========================================================================
+    def comp_r_bias_prec_nut
+      gamma = comp_gamma_bp
+      phi   = comp_phi_bp
+      psi   = comp_psi_bp
+      fj2 = -2.7774e-6 * @jc
+      dpsi_ls, deps_ls = compute_lunisolar
+      dpsi_pl, deps_pl = compute_planetary
+      dpsi, deps = dpsi_ls + dpsi_pl, deps_ls + deps_pl
+      dpsi += dpsi * (0.4697e-6 + fj2)
+      deps += deps * fj2
+      r = r_z(gamma)
+      r = r_x(phi,          r)
+      r = r_z(-psi - dpsi,  r)
+      r = r_x(-@eps - deps, r)
+      return r
+    rescue => e
+      raise
+    end
+
+    #=========================================================================
     # precession（歳差）変換行列（J2000.0 用）
     #
     # * 歳差の変換行列
@@ -142,25 +190,9 @@ module EphBpn
     # @return: r  (変換行列)
     #=========================================================================
     def comp_r_prec
-      gamma = ((10.556403    + \
-               (0.4932044    + \
-               (-0.00031238  + \
-               (-0.000002788 + \
-               (0.0000000260)  \
-               * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
-      phi   =  (84381.406000    + \
-               (  -46.811015    + \
-               (    0.0511269   + \
-               (    0.00053289  + \
-               (   -0.000000440 + \
-               (   -0.0000000176) \
-               * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
-      psi   = (( 5038.481507    + \
-               (    1.5584176   + \
-               (   -0.00018522  + \
-               (   -0.000026452 + \
-               (   -0.0000000148) \
-               * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
+      gamma = comp_gamma_p
+      phi   = comp_phi_p
+      psi   = comp_psi_p
       r = r_z(gamma)
       r = r_x(phi,   r)
       r = r_z(-psi,  r)
@@ -171,39 +203,27 @@ module EphBpn
     end
 
     #=========================================================================
-    # Bias + Precession 変換行列
+    # Precession + Nutation 変換行列
     #
-    # * IAU 2006 (Fukushima-Williams 4-angle formulation) 理論
+    # * IAU 2000A nutation with adjustments to match the IAU 2006 precession.
     #
     # @param:  <none>
     # @return: r  (変換行列)
     #=========================================================================
-    def comp_r_bias_prec
-      gamma = (-0.052928    + \
-              (10.556378    + \
-              ( 0.4932044   + \
-              (-0.00031238  + \
-              (-0.000002788 + \
-              ( 0.0000000260) \
-              * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
-      phi   = (84381.412819    + \
-              (  -46.811016    + \
-              (    0.0511268   + \
-              (    0.00053289  + \
-              (   -0.000000440 + \
-              (   -0.0000000176) \
-              * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
-      psi   = (  -0.041775    + \
-              (5038.481484    + \
-              (   1.5584175   + \
-              (  -0.00018522  + \
-              (  -0.000026452 + \
-              (  -0.0000000148) \
-              * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
+    def comp_r_prec_nut
+      gamma = comp_gamma_p
+      phi   = comp_phi_p
+      psi   = comp_psi_p
+      fj2 = -2.7774e-6 * @jc
+      dpsi_ls, deps_ls = compute_lunisolar
+      dpsi_pl, deps_pl = compute_planetary
+      dpsi, deps = dpsi_ls + dpsi_pl, deps_ls + deps_pl
+      dpsi += dpsi * (0.4697e-6 + fj2)
+      deps += deps * fj2
       r = r_z(gamma)
-      r = r_x(phi,   r)
-      r = r_z(-psi,  r)
-      r = r_x(-@eps, r)
+      r = r_x(phi,          r)
+      r = r_z(-psi - dpsi,  r)
+      r = r_x(-@eps - deps, r)
       return r
     rescue => e
       raise
@@ -228,6 +248,112 @@ module EphBpn
       r = r_z(-dpsi, r)
       r = r_x(-@eps-deps, r)
       return r
+    rescue => e
+      raise
+    end
+
+    #=========================================================================
+    # 歳差変換行列用 gamma 計算
+    #
+    # @param:  <none>
+    # @return: gamma
+    #=========================================================================
+    def comp_gamma_p
+      return ((10.556403    + \
+              ( 0.4932044   + \
+              (-0.00031238  + \
+              (-0.000002788 + \
+              ( 0.0000000260) \
+              * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
+    rescue => e
+      raise
+    end
+
+    #=========================================================================
+    # 歳差変換行列用 phi 計算
+    #
+    # @param:  <none>
+    # @return: phi
+    #=========================================================================
+    def comp_phi_p
+      return (84381.406000    + \
+             (  -46.811015    + \
+             (    0.0511269   + \
+             (    0.00053289  + \
+             (   -0.000000440 + \
+             (   -0.0000000176) \
+             * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
+    rescue => e
+      raise
+    end
+
+    #=========================================================================
+    # 歳差変換行列用 psi 計算
+    #
+    # @param:  <none>
+    # @return: psi
+    #=========================================================================
+    def comp_psi_p
+      return (( 5038.481507    + \
+              (    1.5584176   + \
+              (   -0.00018522  + \
+              (   -0.000026452 + \
+              (   -0.0000000148) \
+              * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
+    rescue => e
+      raise
+    end
+
+    #=========================================================================
+    # バイアス＆歳差変換行列用 gamma 計算
+    #
+    # @param:  <none>
+    # @return: gamma
+    #=========================================================================
+    def comp_gamma_bp
+      gamma = (-0.052928    + \
+              (10.556378    + \
+              ( 0.4932044   + \
+              (-0.00031238  + \
+              (-0.000002788 + \
+              ( 0.0000000260) \
+              * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
+    rescue => e
+      raise
+    end
+
+    #=========================================================================
+    # バイアス＆歳差変換行列用 phi 計算
+    #
+    # @param:  <none>
+    # @return: phi
+    #=========================================================================
+    def comp_phi_bp
+      phi   = (84381.412819    + \
+              (  -46.811016    + \
+              (    0.0511268   + \
+              (    0.00053289  + \
+              (   -0.000000440 + \
+              (   -0.0000000176) \
+              * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
+    rescue => e
+      raise
+    end
+
+    #=========================================================================
+    # バイアス＆歳差変換行列用 psi 計算
+    #
+    # @param:  <none>
+    # @return: psi
+    #=========================================================================
+    def comp_psi_bp
+      psi   = (  -0.041775    + \
+              (5038.481484    + \
+              (   1.5584175   + \
+              (  -0.00018522  + \
+              (  -0.000026452 + \
+              (  -0.0000000148) \
+              * @jc) * @jc) * @jc) * @jc) * @jc) * Const::AS2R
     rescue => e
       raise
     end
