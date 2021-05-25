@@ -3,7 +3,8 @@
 require "eph_bpn"
 
 e = EphBpn.new(ARGV[0])
-pos_g   = [-0.50787065, 0.80728228, 0.34996714]  # GCRS Coordinate
+#pos_g   = [-0.50787065, 0.80728228, 0.34996714]  # GCRS Coordinate
+pos_g   = [-1.0020195, 0.0660430, 0.0286337]
 pos_b   = e.apply_bias(pos_g)           # Apply Bias
 pos_bp  = e.apply_bias_prec(pos_g)      # Apply Bias & Precession
 pos_bpn = e.apply_bias_prec_nut(pos_g)  # Apply Bias & Precession & Nutation
